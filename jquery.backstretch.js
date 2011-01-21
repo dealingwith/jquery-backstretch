@@ -15,7 +15,10 @@
         var settings = {
             centeredX: true,         // Should we center the image on the X axis?
             centeredY: true,         // Should we center the image on the Y axis?
-            speed: 0                // fadeIn speed for background after image loads (e.g. "fast" or 500)
+            speed: 0,                // fadeIn speed for background after image loads (e.g. "fast" or 500)
+            newElem: 'backstretch',
+            zIn: -9999,
+            position: 'fixed'
         },
         rootElement = ("onorientationchange" in window) ? $(document) : $(window), // hack to acccount for iOS position:fixed shortcomings
         imgRatio, bgImg, bgWidth, bgHeight, bgOffset, bgCSS;
@@ -32,8 +35,8 @@
         function _init() {
             // Prepend image, wrapped in a DIV, with some positioning and zIndex voodoo
             if(src) {
-                var container = $("<div />").attr("id", "backstretch")
-                                            .css({left: 0, top: 0, position: "fixed", overflow: "hidden", zIndex: -9999}),
+                var container = $("<div />").attr("id", settings.newElem)
+                                            .css({left: 0, top: 0, position: settings.position, overflow: "hidden", zIndex: settings.zIn}),
                     img = $("<img />").css({position: "relative", display: "none"})
                                       .bind("load", function(e) {                                          
                                           var self = $(this);
@@ -73,7 +76,7 @@
                     if(settings.centeredX) $.extend(bgCSS, {left: "-" + bgOffset + "px"});
                 }
 
-                $("#backstretch img").width( bgWidth ).height( bgHeight ).css(bgCSS);
+                $("#" + settings.newElem + " img").width( bgWidth ).height( bgHeight ).css(bgCSS);
             } catch(err) {
                 // IE7 seems to trigger _adjustBG before the image is loaded.
                 // This try/catch block is a hack to let it fail gracefully.
